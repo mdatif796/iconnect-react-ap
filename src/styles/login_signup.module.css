@@ -1,0 +1,39 @@
+.login_signup_form {
+  width: 350px;
+  margin: auto;
+  padding: 15px;
+  padding-bottom: 20px;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.login_signup_header {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #ef7917;
+}
+
+.input_field {
+  padding: 8px 5px;
+  font-size: 15px;
+  margin-bottom: 16px;
+  border: none;
+  outline: none;
+  border: 1px solid rgb(0, 0, 0, 0.12);
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.btn {
+  padding: 7px;
+  font-size: 19px;
+  border: none;
+  background-color: #ef7917;
+  color: #fff;
+  cursor: pointer;
+}
