@@ -1,33 +1,30 @@
 import axios from 'axios';
-import { API_URLS, LOCAL_STORAGE_TOKEN_KEY } from '../utils';
+import { API_URLS, getFormBody, LOCAL_STORAGE_TOKEN_KEY } from '../utils';
 
 const customFetch = async (url, { body, ...customConfig }) => {
   try {
     const token = window.localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
     const headers = {
-      'content-tye': 'application/json',
-      Accept: 'application/json',
+      'content-type': 'x-www-form-urlencoded',
     };
 
     if (token) {
-      headers.Authorization = `Bearer ${token}`;
+      headers.authorization = `Bearer ${token}`;
     }
 
     const config = {
       ...customConfig,
-      headers: {
-        ...headers,
-        ...customConfig.headers,
-      },
+      headers,
     };
 
     config.url = url;
 
     if (body) {
-      config.body = JSON.stringify(body);
+      config.body = getFormBody(body);
     }
 
     const response = await axios(config);
+    console.log('response: ', response);
     const data = await response.data;
     // console.log(data);
     if (data.success) {
@@ -51,4 +48,26 @@ export const getPosts = (page = 1, limit = 5) => {
   return customFetch(API_URLS.posts(page, limit), {
     method: 'GET',
   });
+};
+
+export const logIn = async (email, password) => {
+  // return customFetch(API_URLS.login(), {
+  //   method: 'POST',
+  //   body: { email, password },
+  // });
+  const response = fetch(API_URLS.login(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      // 'Authorization': `Bearer ${token}` // Remove Auth if not required
+    },
+    body: getFormBody({ email: email, password: password }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // your response in json
+      console.log(data);
+      return data;
+    });
+  return response;
 };
