@@ -1,9 +1,33 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 import styles from '../styles/home.module.css';
 import Comment from '../components/Comment';
+import { useEffect, useState } from 'react';
+import { getPosts } from '../api';
+import { Loader } from '../components';
 
-const Home = ({ posts }) => {
+const Home = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const posts = await getPosts();
+      console.log('posts: ', posts);
+      if (posts.success) {
+        setPosts(posts.data.posts);
+      }
+
+      setLoading(false);
+    };
+
+    fetchPosts();
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className={styles.postsList}>
       {posts.map((post) => (
@@ -54,8 +78,8 @@ const Home = ({ posts }) => {
   );
 };
 
-Home.propTypes = {
-  posts: PropTypes.array.isRequired,
-};
+// Home.propTypes = {
+//   posts: PropTypes.array.isRequired,
+// };
 
 export default Home;

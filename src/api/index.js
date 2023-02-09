@@ -71,3 +71,56 @@ export const logIn = async (email, password) => {
     });
   return response;
 };
+
+export const signUp = async (email, name, password, confirm_password) => {
+  // return customFetch(API_URLS.signup(), {
+  //   method: 'POST',
+  //   body: { email, name, password, confirm_password },
+  // });
+
+  const response = fetch(API_URLS.signup(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      // 'Authorization': `Bearer ${token}` // Remove Auth if not required
+    },
+    body: getFormBody({
+      email: email,
+      name: name,
+      password: password,
+      confirm_password: confirm_password,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // your response in json
+      console.log(data);
+      return data;
+    });
+  return response;
+};
+
+export const editUser = async (userId, password, confirm_password, name) => {
+  const token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
+
+  const response = fetch(API_URLS.editUser(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${token}`, // Remove Auth if not required
+    },
+    body: getFormBody({
+      id: userId,
+      name: name,
+      password: password,
+      confirm_password: confirm_password,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // your response in json
+      console.log(data);
+      return data;
+    });
+  return response;
+};

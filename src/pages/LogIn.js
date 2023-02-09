@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../hooks';
 import styles from '../styles/login_signup.module.css';
@@ -8,6 +9,8 @@ const LogIn = () => {
   const [password, setPassword] = useState('');
   const [loggingIn, setLoggingIn] = useState(false);
   const auth = useAuth();
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +23,7 @@ const LogIn = () => {
     const response = await auth.login(email, password);
     if (response.success) {
       toast.success('successfully logged In');
+      navigate('/');
     } else {
       toast.error(response.message);
     }
