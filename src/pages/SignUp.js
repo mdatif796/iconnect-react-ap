@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { useAuth } from '../hooks';
 import styles from '../styles/login_signup.module.css';
 
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -43,6 +43,10 @@ const SignUp = () => {
     setSigningUp(false);
     return;
   };
+
+  if (auth.user) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <form className={styles.login_signup_form} onSubmit={handleSubmit}>

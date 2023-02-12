@@ -2,21 +2,19 @@ import styles from '../styles/settings.module.css';
 import { useAuth } from '../hooks';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+// import { Navigate } from 'react-router-dom';
 
 const Settings = () => {
   const auth = useAuth();
 
   const [editMode, setEditMode] = useState(false);
-  const [name, setName] = useState('');
+  const [name, setName] = useState(auth.user?.name);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [savingForm, setSavingForm] = useState(false);
 
   const handleFormClick = () => {
     setEditMode(true);
-    setName(auth?.user.name);
-    setPassword(auth?.user.password);
-    setConfirmPassword(auth?.user.password);
   };
 
   const handleBackBtn = () => {
@@ -26,15 +24,19 @@ const Settings = () => {
   const handleFormSave = async () => {
     setSavingForm(true);
     if (!name || !password || !confirmPassword) {
-      toast.error('Enter all the fields');
-      setEditMode(false);
+      toast.error('Enter all the fields', {
+        position: 'top-left',
+      });
+      // setEditMode(false);
       setSavingForm(false);
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error('Password and confirm password does not match');
-      setEditMode(false);
+      toast.error('Password and confirm password does not match', {
+        position: 'top-left',
+      });
+      // setEditMode(false);
       setSavingForm(false);
       return;
     }
@@ -47,16 +49,23 @@ const Settings = () => {
     );
     console.log('response: ', response);
     if (response.success) {
-      toast.success('successfully profile updated');
-      setName(auth?.user.name);
+      toast.success('successfully profile updated', {
+        position: 'top-left',
+      });
     } else {
-      toast.error(response.message);
+      toast.error(response.message, {
+        position: 'top-left',
+      });
     }
 
     setEditMode(false);
     setSavingForm(false);
     return;
   };
+
+  // if (!auth.user) {
+  //   return <Navigate to="/" />;
+  // }
 
   return (
     <div className={styles.settings}>
@@ -87,27 +96,31 @@ const Settings = () => {
         )}
       </div>
 
-      <div className={styles.field}>
-        <div className={styles.fieldLabel}>Password</div>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        />
-      </div>
+      {editMode && (
+        <>
+          <div className={styles.field}>
+            <div className={styles.fieldLabel}>Password</div>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+          </div>
 
-      <div className={styles.field}>
-        <div className={styles.fieldLabel}>Confirm Password</div>
-        <input
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => {
-            setConfirmPassword(e.target.value);
-          }}
-        />
-      </div>
+          <div className={styles.field}>
+            <div className={styles.fieldLabel}>Confirm Password</div>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+              }}
+            />
+          </div>
+        </>
+      )}
 
       <div className={styles.btnGrp}>
         {editMode ? (
