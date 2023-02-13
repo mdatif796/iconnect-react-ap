@@ -21,29 +21,29 @@ export const useProvideAuth = () => {
 
   // const navigate = useNavigate();
   useEffect(() => {
-    const token = getItemFromLocalStorage(LOCAL_STORAGE_TOKEN_KEY);
-    if (token) {
-      try {
-        const decodedUser = jwt(token);
-        console.log('decodedUser: ', decodedUser);
+    const getUser = async () => {
+      const userToken = getItemFromLocalStorage(LOCAL_STORAGE_TOKEN_KEY);
 
-        const getUserFriends = async () => {
-          const response = await fetchUserFriends();
-          console.log('response4: ', response);
-          if (response.success) {
-            decodedUser.friendships = response.data.friends;
-          }
-        };
+      if (userToken) {
+        const user = jwt(userToken);
+        const response = await fetchUserFriends();
 
-        getUserFriends();
+        let friendships = [];
 
-        setUser(decodedUser);
-      } catch (error) {
-        console.log(error);
-        // return navigate('/login');
+        if (response.success) {
+          friendships = response.data.friends;
+        }
+
+        setUser({
+          ...user,
+          friendships,
+        });
       }
-    }
-    setLoading(false);
+
+      setLoading(false);
+    };
+
+    getUser();
   }, []);
 
   const login = async (email, password) => {
@@ -108,6 +108,25 @@ export const useProvideAuth = () => {
     removeItemFromLocalStorage(LOCAL_STORAGE_TOKEN_KEY);
   };
 
+  const updateUserFriends = (addFriend, friend) => {
+    if (addFriend) {
+      setUser({
+        ...user,
+        friendships: [...user.friendships, friend],
+      });
+      return;
+    }
+
+    const newFriends = user.friendships.filter(
+      (f) => f.to_user._id !== friend.to_user._id
+    );
+
+    setUser({
+      ...user,
+      friendships: newFriends,
+    });
+  };
+
   return {
     user,
     login,
@@ -115,5 +134,6 @@ export const useProvideAuth = () => {
     loading,
     signup,
     edituser,
+    updateUserFriends,
   };
 };

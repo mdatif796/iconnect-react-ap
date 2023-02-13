@@ -181,3 +181,22 @@ export const fetchUserFriends = async () => {
     });
   return response;
 };
+
+export const removeFriendApi = async (userId) => {
+  const token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
+
+  const response = fetch(API_URLS.removeFriend(userId), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${token}`, // Remove Auth if not required
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // your response in json
+      console.log(data);
+      return data;
+    });
+  return response;
+};

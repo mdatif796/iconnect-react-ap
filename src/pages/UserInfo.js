@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { createFriendship, fetchUserFriends, userProfileInfo } from '../api';
+import { createFriendship, removeFriendApi, userProfileInfo } from '../api';
 import { Loader } from '../components';
 import { useAuth } from '../hooks';
 import styles from '../styles/settings.module.css';
@@ -9,50 +9,39 @@ import styles from '../styles/settings.module.css';
 const UserInfo = () => {
   const [user, setUser] = useState('');
   const [loading, setLoading] = useState(true);
-  const [isFriend, setIsFriend] = useState(false);
   const [sendFriendRequest, setSendFriendRequest] = useState(false);
+  const [removeFriend, setRemoveFriend] = useState(false);
 
   const auth = useAuth();
   console.log(auth);
   const { userId } = useParams();
 
-  const setFriend = async () => {
-    const userFriends = await user?.friends;
-    console.log('userFriends: ', userFriends);
+  const checkIfUserIsAFriend = () => {
+    const friends = auth.user.friendships;
 
-    if (userFriends?.length > 0) {
-      for (let i = 0; i < userFriends.length; i++) {
-        console.log('for loop');
-        if (userFriends[i].to_user._id === userId) {
-          console.log(
-            'userFriends[i].to_user._id: ',
-            userFriends[i].to_user._id,
-            userId
-          );
+    const friendIds = friends.map((friend) => friend.to_user._id);
+    const index = friendIds.indexOf(userId);
 
-          setIsFriend(true);
-
-          break;
-        }
-      }
+    if (index !== -1) {
+      return true;
     }
+
+    return false;
   };
 
   const handleAddFriend = async () => {
     setSendFriendRequest(true);
 
-    const response = await createFriendship(user._id);
+    const response = await createFriendship(userId);
     console.log('response-add: ', response);
 
     if (response.success) {
+      const { friendship } = response.data;
+      auth.updateUserFriends(true, friendship);
+
       toast.success('Friends Added!!', {
         position: 'top-left',
       });
-
-      await auth.user.friendships.push(response.data.friendship);
-      console.log('response.data.friendships: ', response.data.friendships);
-
-      setIsFriend(true);
     } else {
       toast.error(response.message, {
         position: 'top-left',
@@ -63,7 +52,29 @@ const UserInfo = () => {
     return;
   };
 
-  setFriend();
+  const handleRemoveFriend = async () => {
+    setRemoveFriend(true);
+    const response = await removeFriendApi(userId);
+    console.log('response: ', response);
+
+    if (response.success) {
+      const friendship = auth.user.friendships.filter(
+        (friend) => friend.to_user._id === userId
+      );
+
+      auth.updateUserFriends(false, friendship[0]);
+
+      toast.success('Friends Removed!!', {
+        position: 'top-left',
+      });
+    } else {
+      toast.error(response.message, {
+        position: 'top-left',
+      });
+    }
+    setRemoveFriend(false);
+  };
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -72,15 +83,7 @@ const UserInfo = () => {
       console.log('response7: ', response);
 
       if (response.success) {
-        let userFetched = await response.data.user;
-
-        const fetchUserFriendsResponse = await fetchUserFriends();
-
-        if (fetchUserFriendsResponse.success) {
-          userFetched.friends = await fetchUserFriendsResponse.data.friends;
-          setUser(userFetched);
-          console.log('userFetched: ', userFetched);
-        }
+        setUser(response.data.user);
       } else {
         toast.error(response.message, {
           position: 'top-left',
@@ -117,8 +120,14 @@ const UserInfo = () => {
       </div>
 
       <div className={styles.btnGrp}>
-        {isFriend ? (
-          <button className={`button ${styles.editBtn}`}>Remove Friend</button>
+        {checkIfUserIsAFriend() ? (
+          <button
+            className={`button ${styles.editBtn}`}
+            onClick={handleRemoveFriend}
+            disabled={removeFriend}
+          >
+            {removeFriend ? 'Removing Friend...' : 'Remove Friend'}
+          </button>
         ) : (
           <button
             className={`button ${styles.editBtn}`}
