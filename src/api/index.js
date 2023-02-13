@@ -200,3 +200,25 @@ export const removeFriendApi = async (userId) => {
     });
   return response;
 };
+
+export const addPost = async (content) => {
+  const token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
+
+  const response = await fetch(API_URLS.createPost(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${token}`, // Remove Auth if not required
+    },
+    body: getFormBody({
+      content,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // your response in json
+      console.log(data);
+      return data;
+    });
+  return response;
+};
