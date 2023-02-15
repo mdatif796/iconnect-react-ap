@@ -1,42 +1,24 @@
 // import PropTypes from 'prop-types';
-
 import styles from '../styles/home.module.css';
 import Comment from '../components/Comment';
-import { useEffect, useState } from 'react';
-import { getPosts } from '../api';
 import { CreatePost, FriendsList, Loader } from '../components';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks';
+import { usePosts } from '../hooks/postProviderHooks';
 
 const Home = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
   const auth = useAuth();
+  const posts = usePosts();
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const posts = await getPosts();
-      console.log('posts: ', posts);
-      if (posts.success) {
-        setPosts(posts.data.posts);
-      }
-
-      setLoading(false);
-    };
-
-    fetchPosts();
-  }, []);
-
-  if (loading) {
+  if (posts.loading) {
     return <Loader />;
   }
 
   return (
     <div className={styles.home}>
       <div className={styles.postsList}>
-        <CreatePost />
-        {posts.map((post) => (
+        {auth.user && <CreatePost />}
+        {posts.data.map((post) => (
           <div className={styles.postWrapper} key={`post-${post._id}`}>
             <div className={styles.postHeader}>
               <div className={styles.postAvatar}>
@@ -74,7 +56,7 @@ const Home = () => {
                 </div>
               </div>
               <div className={styles.postCommentBox}>
-                <input placeholder="Start typing a comment" />
+                <input placeholder="Start typing a comment" type="search" />
               </div>
 
               {post.comments.map((comment) => {

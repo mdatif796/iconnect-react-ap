@@ -21,6 +21,7 @@ const LogIn = () => {
     const response = await auth.login(email, password);
     if (response.success) {
       toast.success('successfully logged In');
+      return <Navigate to="/" />;
     } else {
       toast.error(response.message);
     }

@@ -24,18 +24,14 @@ const Settings = () => {
   const handleFormSave = async () => {
     setSavingForm(true);
     if (!name || !password || !confirmPassword) {
-      toast.error('Enter all the fields', {
-        position: 'top-left',
-      });
+      toast.error('Enter all the fields');
       // setEditMode(false);
       setSavingForm(false);
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error('Password and confirm password does not match', {
-        position: 'top-left',
-      });
+      toast.error('Password and confirm password does not match');
       // setEditMode(false);
       setSavingForm(false);
       return;
@@ -49,13 +45,9 @@ const Settings = () => {
     );
     console.log('response: ', response);
     if (response.success) {
-      toast.success('successfully profile updated', {
-        position: 'top-left',
-      });
+      toast.success('successfully profile updated');
     } else {
-      toast.error(response.message, {
-        position: 'top-left',
-      });
+      toast.error(response.message);
     }
 
     setEditMode(false);

@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { addPost } from '../api';
+import { usePosts } from '../hooks/postProviderHooks';
 import styles from '../styles/home.module.css';
 
 const CreatePost = () => {
   const [post, setPost] = useState('');
   const [addingPost, setAddingPost] = useState(false);
 
+  const posts = usePosts();
+
   const handleAddPost = async () => {
     setAddingPost(true);
 
     if (post.length === 0) {
-      toast.error('Post content is empty', {
-        position: 'top-left',
-      });
+      toast.error('Post content is empty');
       setAddingPost(false);
       return;
     }
@@ -22,14 +23,13 @@ const CreatePost = () => {
 
     if (response.success) {
       setPost('');
-      toast.success('Post added', {
-        position: 'top-left',
-      });
+
+      posts.updatePost(response.data.post);
+
+      toast.success('Post added');
     } else {
       console.log(response);
-      toast.error(response.message, {
-        position: 'top-left',
-      });
+      toast.error(response.message);
     }
 
     setAddingPost(false);

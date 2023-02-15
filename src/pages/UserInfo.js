@@ -39,13 +39,9 @@ const UserInfo = () => {
       const { friendship } = response.data;
       auth.updateUserFriends(true, friendship);
 
-      toast.success('Friends Added!!', {
-        position: 'top-left',
-      });
+      toast.success('Friends Added!!');
     } else {
-      toast.error(response.message, {
-        position: 'top-left',
-      });
+      toast.error(response.message);
     }
 
     setSendFriendRequest(false);
@@ -64,13 +60,9 @@ const UserInfo = () => {
 
       auth.updateUserFriends(false, friendship[0]);
 
-      toast.success('Friends Removed!!', {
-        position: 'top-left',
-      });
+      toast.success('Friends Removed!!');
     } else {
-      toast.error(response.message, {
-        position: 'top-left',
-      });
+      toast.error(response.message);
     }
     setRemoveFriend(false);
   };
@@ -85,9 +77,7 @@ const UserInfo = () => {
       if (response.success) {
         setUser(response.data.user);
       } else {
-        toast.error(response.message, {
-          position: 'top-left',
-        });
+        toast.error(response.message);
         return navigate('/');
       }
       setLoading(false);
