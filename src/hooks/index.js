@@ -23,10 +23,13 @@ export const useProvideAuth = () => {
   useEffect(() => {
     const getUser = async () => {
       const userToken = getItemFromLocalStorage(LOCAL_STORAGE_TOKEN_KEY);
+      console.log('userToken: ', userToken);
 
       if (userToken) {
         const user = jwt(userToken);
+        console.log('user: ', user);
         const response = await fetchUserFriends();
+        console.log('response: ', response);
 
         let friendships = [];
 

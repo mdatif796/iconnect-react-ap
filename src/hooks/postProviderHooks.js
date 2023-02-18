@@ -29,9 +29,24 @@ export const useProvidePosts = () => {
     setPosts(newPosts);
   };
 
+  const addCommentToState = (post_id, comment) => {
+    let newPosts = posts.map((post) => {
+      if (post._id === post_id) {
+        return {
+          ...post,
+          comments: [...post.comments, comment],
+        };
+      }
+      return post;
+    });
+
+    setPosts(newPosts);
+  };
+
   return {
     data: posts,
     loading,
     updatePost,
+    addCommentToState,
   };
 };

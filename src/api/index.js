@@ -222,3 +222,26 @@ export const addPost = async (content) => {
     });
   return response;
 };
+
+export const addComment = async (post_id, content) => {
+  const token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
+
+  const response = await fetch(API_URLS.comment(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${token}`, // Remove Auth if not required
+    },
+    body: getFormBody({
+      post_id,
+      content,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // your response in json
+      console.log(data);
+      return data;
+    });
+  return response;
+};
