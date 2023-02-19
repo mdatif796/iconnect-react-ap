@@ -245,3 +245,41 @@ export const addComment = async (post_id, content) => {
     });
   return response;
 };
+
+export const toggleLikeFun = async (itemId, itemType) => {
+  const token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
+
+  const response = await fetch(API_URLS.toggleLike(itemId, itemType), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${token}`, // Remove Auth if not required
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // your response in json
+      console.log(data);
+      return data;
+    });
+  return response;
+};
+
+export const listOfLikes = async (itemId, itemType) => {
+  const token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
+
+  const response = await fetch(API_URLS.getLikes(itemId, itemType), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${token}`, // Remove Auth if not required
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // your response in json
+      console.log(data);
+      return data;
+    });
+  return response;
+};

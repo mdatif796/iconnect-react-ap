@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { usePosts } from '../hooks/postProviderHooks';
 import { toast } from 'react-toastify';
-import { addComment } from '../api';
+import { addComment, listOfLikes, toggleLikeFun } from '../api';
 import { useAuth } from '../hooks';
 
 const Post = ({ post }) => {
@@ -33,6 +33,24 @@ const Post = ({ post }) => {
     }
   };
 
+  const handleToggleLikeBtn = async () => {
+    console.log('POSTLIKE', posts);
+    const response = await toggleLikeFun(post._id, 'Post');
+    // const likes = await listOfLikes(post._id, 'Post');
+    // console.log('likes ', likes);
+
+    if (response.success) {
+      if (response.data.deleted) {
+        toast.success('Like removed successfully');
+      } else {
+        toast.success('Like added successfully');
+      }
+    } else {
+      toast.error(response.message);
+    }
+    return;
+  };
+
   return (
     <div className={styles.postWrapper} key={`post-${post._id}`}>
       <div className={styles.postHeader}>
@@ -53,6 +71,7 @@ const Post = ({ post }) => {
         <div className={styles.postActions}>
           <div className={styles.postLike}>
             <img
+              onClick={handleToggleLikeBtn}
               src="https://cdn-icons-png.flaticon.com/512/2589/2589175.png"
               alt="likes-icon"
             />
