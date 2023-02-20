@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { usePosts } from '../hooks/postProviderHooks';
 import { toast } from 'react-toastify';
-import { addComment, listOfLikes, toggleLikeFun } from '../api';
+import { addComment, toggleLikeFun } from '../api';
 import { useAuth } from '../hooks';
 
 const Post = ({ post }) => {

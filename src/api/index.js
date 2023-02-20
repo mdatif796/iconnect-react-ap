@@ -283,3 +283,22 @@ export const listOfLikes = async (itemId, itemType) => {
     });
   return response;
 };
+
+export const getSearchUser = async (searchText) => {
+  const token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
+
+  const response = await fetch(API_URLS.searchUsers(searchText), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${token}`, // Remove Auth if not required
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // your response in json
+      console.log(data);
+      return data;
+    });
+  return response;
+};
